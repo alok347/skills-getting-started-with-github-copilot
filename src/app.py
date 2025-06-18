@@ -20,6 +20,7 @@ app.mount("/static", StaticFiles(directory=os.path.join(Path(__file__).parent,
           "static")), name="static")
 
 # In-memory activity database
+# Added: 2 sports, 2 artistic, 2 intellectual activities
 activities = {
     "Chess Club": {
         "description": "Learn strategies and compete in chess tournaments",
@@ -58,7 +59,9 @@ def signup_for_activity(activity_name: str, email: str):
     # Validate activity exists
     if activity_name not in activities:
         raise HTTPException(status_code=404, detail="Activity not found")
-
+# Validate student is not already signed up
+    if email in activities[activity_name]["participants"]:
+        raise HTTPException(status_code=400, detail="Already signed up for this activity")
     # Get the specific activity
     activity = activities[activity_name]
 
